@@ -1,0 +1,41 @@
+<h3>
+  <p-card header="Youster" #playlistDrop>
+    <div *ngIf="selection.length > 0">
+      <p-card header="Select playlist" [style]="{width: '400px'}" styleClass="ui-card-shadow">
+        <p-dropdown #drop [options]="selection" [(ngModel)]="selectedPlaylist" placeholder="Select playlist">
+        </p-dropdown>
+        <button pButton type="button" label="Create" icon="fa fa-plus" (click)="op.toggle($event)">
+        </button>
+        <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="fa-close">
+            New playlist :
+            <input id="input" autofocus type="text" size="20" pInputText [(ngModel)]="newPlaylist">
+            <span>
+                <button pButton type="button" icon="fa fa-check" (click)="create()"></button>
+            </span>             
+        </p-overlayPanel>
+        <h5>
+          <p>Selected playlist: {{selectedPlaylist ? selectedPlaylist.name : 'none'}}</p>
+        </h5>
+      </p-card>
+      <p-card title="Download" [style]="{width: '400px'}" styleClass="ui-card-shadow">
+        <input id="input" type="text" size="30" pInputText [(ngModel)]="searchText">
+        <p>
+          <button pButton type="button" label="Search" icon="fa fa-search" (click)="search()"></button>
+          <button pButton type="button" label="Clear" icon="fa fa-close" (click)="searchText=''"></button>
+        </p>
+        <div *ngIf="songsList.length > 0">
+          <p-listbox [options]="songsList" [(ngModel)]="selectedSongs" multiple="multiple" filter="filter" checkbox="checkbox" [style]="{'width':'355px'}">
+            <p-header>
+              <i class="fa fa-music"></i><span> Results</span>
+            </p-header>
+          </p-listbox>
+        </div>
+        <p-footer>
+          <button pButton type="button" label="Download" (click)="download()" icon="fa fa-download"></button>
+          <button pButton type="button" label="Cancel" icon="fa fa-close" class="ui-button-secondary"></button>
+        </p-footer>
+      </p-card>
+      <p>Selected songs: <span *ngFor="let s of selectedSongs" style="margin-right: 10px">{{s.title}}</span></p>
+    </div>
+  </p-card>
+</h3>
