@@ -85,11 +85,11 @@ def move():
   pass
 
 def pafy_dl(id):
-  vid = pafy.new('Cgw44TzMWuo')
+  vid = pafy.new(id)
   mp3 = vid.getbestaudio("m4a")
   if not os.path.isfile(mp3.title+'.'+mp3.extension):
     filename = mp3.download()
-    return str(filename)
+    return str(filename).strip("'")
   return 'File exists'
 
 def custom_response(msg):
