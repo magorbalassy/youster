@@ -1,4 +1,4 @@
-import json, os, pafy, sys
+import json, os, pafy, socket, sys
 from flask import Flask, jsonify, render_template, request, Response
 from googleapiclient.discovery import build
 from oauth2client import file, client, tools
@@ -29,7 +29,7 @@ class Drive:
       for item in self.get_folder_content():
         pcs = item.split()
         if 'folder' in pcs[2] and pcs[0] == folderName:
-            return custom_response('folder exists')
+            return 'folder exists'
       # Create a folder on Drive, returns the newely created folders ID
       body = {
           'name': folderName,
@@ -67,11 +67,14 @@ def copy_to_drive(filename,playlist):
     if os.path.getsize(filename) < 5242880:
       api_media_upload(filename)
 
+@app.before_request
+def before_request():
+    if request.remote_addr != socket.gethostbyname('maz.si'):
+        return custom_response("Requests from your IP are not allowed.")
+
 @app.route('/download/<string:id>')
 def download(id):
-    response = jsonify({'results':pafy_dl(id)})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return custom_response(pafy_dl(id))
 
 @app.route('/createpl/<string:name>')
 def create(name):
@@ -90,13 +93,9 @@ def pafy_dl(id):
   return 'File exists'
 
 def custom_response(msg):
-  res = Response(
-      response=json.dumps(msg),
-      status=200,
-      mimetype='application/json',
-      )
-  res.headers['Access-Control-Allow-Origin'] = '*'
-  return res
+    response = jsonify({'result':msg})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == "__main__":
     # Call the Drive v3 API
@@ -110,6 +109,4 @@ if __name__ == "__main__":
     #    print('Files:')
     #    for item in items:
     #        print(u'{0} ({1})'.format(item['name'], item['id']))    
-    app.run(debug=True, host='0.0.0.0', port='5000')
-'''
-sudo pip  install pafy flask google-api-python-client oauth2client'''
+    app.run(debug=True, host='0.0.0.0', port='80')

@@ -11,7 +11,7 @@ https://cloud.google.com/free/docs/gcp-free-tier
 The program is split in to 3 parts:
 - `donwload_backend.py`: runs on Google Compute Engine, api endpoint to download mp3 from Youtube and move files to Drive
 - `search_backend.py` : runs on Google Appengine, returns Youtube search results and handles the UI, launches the download  
-- `frontend` : Angular6 code for the UI, runs on Appengine 
+- `frontend` : Angular10 code for the UI, runs on Appengine 
 
 # Launch local dev server
 `dev_appserver.py app.yaml --enable_console`
@@ -19,22 +19,39 @@ The program is split in to 3 parts:
 - `dev_appserver.py` should exist in your path if the Google Cloud SDK is installed
 - command should be executed in the folder where `app.yaml` is located
 
-# Dependency libraries 
+# Dependencies and required libraries 
 
-- install client library for google-api : `sudo pip install --upgrade google-api-python-client`
-- need `pip install oauth2client` to be able to do oauth with google drive using token cand creds
-- need `pip install pafy` for Youtube downloads (https://pythonhosted.org/Pafy/)
-- `sudo apt-get install libffi-dev` : needed for youtube-dl download stream encoding
+### Download Backend
+
+This runs on the free 720 hours/month f1-micro vm of GCP (North America zone).
+
+- the download backend will need : python3-pip, zip, unzip, wget apt packages
+- install client libraries: `sudo pip3 install --upgrade google-api-python-client pafy youtube-dl oauth2client flask`
+- need `pafy` for Youtube downloads
+
 - need the cloud SDF : https://cloud.google.com/appengine/docs/standard/python/download
 - Google drive api upload library : `from apiclient.http import MediaFileUpload`
-- `pip install pyopenssl` for adhoc certs on download backend
+- `pip install pyopenssl` for adhoc certs on download backend - this will be changed to Let's Encrypt
+
+### Search backend required npm packages :
+
+This will run together with the frontend on Appengine.
+
+- npm install @angular/cdk @angular/http primeng primeicons rxjs-compat
+- add Primeng CSS styles to the app's `angular.json`
 
 
 # Add missing files
-- In order to make the app functional, you have to add your `credentials.json` and `token.json` files - these are used to as authentication for Google APIs 
+- In order to make the app functional, you have to add your `credentials.json` and `token.json` files into the folder where the download_backend.py is - these are used to as authentication for Google APIs 
 - `token.json` can be created by removing old token file and running `python download_backend.py --noauth_local_webserver`
-- also the Youtube API key is needed in the code
+- also your Youtube API key is needed in the code
 
+
+# TLDR; Build and deploy
+
+Build the bundle.js, copy together into a folder with search_backend, use gcloud to deploy the app to Appengine.
+`ng build && cp `
+(I'll add an easy deploy method soon).
 
 # Gcloud commands
 
@@ -44,8 +61,8 @@ gcloud init
 gcloud config set account balassy.magor@gmail.com
 gcloud auth login
 gcloud config set project youster
-gcloud compute --project "youster" ssh --zone "us-east1-b" "playlistr"
-gcloud compute scp ../youster.tar.gz  youster:~/
+gcloud compute --project "youster" ssh --zone "us-east1-b" "gc"
+gcloud compute scp ../youster.tar.gz  balassy_magor@gc:~/
 gcloud compute scp [LOCAL_FILE_PATH] [INSTANCE_NAME]:~/
 gcloud app browse
 
@@ -56,12 +73,12 @@ gcloud app browse
 
 # Errors
 
-ImportError: ctypes is currently disabled on this App Engine app; to enable it, add GAE_USE_CTYPES: '1' to the env_variables section of your app.yaml file.
+ImportError: ctypes is currently disabled on this App Engine app; to enable it, add GAE_USE_CTYPES: '1' to the env_variables section of your app.yaml file (We don't need this actually).
 
 # App deployment
 
 ```bash
-magor@ubuntu-vm:~/Documents/SynologyDrive/playlist-generator$ gcloud app deploy app.yaml 
+magor@ubuntu-vm:~/Documents/SynologyDrive/youster$ gcloud app deploy app.yaml 
 You are creating an app for project [playlis].
 WARNING: Creating an App Engine application for a project is irreversible and the region
 cannot be changed. More information about regions is at
@@ -88,15 +105,15 @@ located:
  [16] cancel
 Please enter your numeric choice:  8
 
-Creating App Engine application in project [playlis] and region [europe-west3]....done.                                                         
+Creating App Engine application in project [youster] and region [europe-west3]....done.                                                         
 Services to deploy:
 
-descriptor:      [/home/magor/Documents/SynologyDrive/playlist-generator/app.yaml]
-source:          [/home/magor/Documents/SynologyDrive/playlist-generator]
-target project:  [playlis]
+descriptor:      [/home/magor/Documents/SynologyDrive/youster/app.yaml]
+source:          [/home/magor/Documents/SynologyDrive/youster]
+target project:  [youster]
 target service:  [default]
 target version:  [20190623t173749]
-target url:      [https://playlis.appspot.com]
+target url:      [https://youster.appspot.com]
 
 
 Do you want to continue (Y/n)?  y
@@ -108,7 +125,7 @@ Beginning deployment of service [default]...
 File upload done.
 Updating service [default]...done.                                                                                                              
 Setting traffic split for service [default]...done.                                                                                             
-Deployed service [default] to [https://playlis.appspot.com]
+Deployed service [default] to [https://youster.appspot.com]
 
 You can stream logs from the command line by running:
   $ gcloud app logs tail -s default
