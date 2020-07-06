@@ -1,6 +1,6 @@
 # Drive imports
 from __future__ import print_function
-from googleapiclient.discovery import build
+from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 from HTMLParser import HTMLParser
@@ -42,13 +42,9 @@ def youtube_search(searchtext):
   return videos
 
 def custom_response(msg):
-  res = Response(
-      response=json.dumps(msg),
-      status=200,
-      mimetype='application/json',
-      )
-  res.headers['Access-Control-Allow-Origin'] = '*'
-  return res
+  response = jsonify({'results':msg})
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  return response
 
 @app.route('/rest/')
 @app.route('/rest/index')
@@ -57,9 +53,7 @@ def index():
 
 @app.route('/rest/search/<string:search_string>')
 def search(search_string):
-    response = jsonify({'results':youtube_search(search_string)})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return custom_response(youtube_search(search_string))
 
 @app.route('/rest/playlists', methods=['GET', 'POST'])
 def playlists():
@@ -80,13 +74,13 @@ def playlists():
   elif request.method == 'POST':
     if 'name' in request.form:
       if request.form['name'] in p_names:
-        return drive_mkdir()#'exists'
+        return custom_response('exists')
       else:
         p = Playlist(name=request.form['name'])
         p.put()
-        return str(request.form)
+        return custom_response(str(request.form))
     else:
-      return 'Name must be specified.'
+      return custom_response('Name must be specified.')
 
 @app.route('/rest/tracks')
 def tracks():
