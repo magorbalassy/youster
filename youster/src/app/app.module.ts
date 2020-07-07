@@ -12,8 +12,8 @@ import {CardModule} from 'primeng/card';
 import {InputTextModule} from 'primeng/inputtext';
 import {ListboxModule} from 'primeng/listbox';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+//import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 
 @NgModule({
@@ -23,7 +23,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FontAwesomeModule,
+    //FontAwesomeModule,
     FormsModule,
     HttpModule,
     ButtonModule,
@@ -32,7 +32,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     InputTextModule,
     ListboxModule,
     OverlayPanelModule,
-    AngularFontAwesomeModule
+    //AngularFontAwesomeModule
   ],
   providers: [PlaylistService],
   bootstrap: [AppComponent]

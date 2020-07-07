@@ -4,8 +4,7 @@ import { PlaylistService } from './app.service';
 import { Playlist } from './models';
 import { Song } from './models';
 import 'rxjs/add/operator/map'
-import {SelectItem} from 'primeng/api';
-import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { SelectItem } from 'primeng/api';
 
 
 
@@ -15,16 +14,14 @@ import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @ViewChild('drop', {static: false}) drop:ElementRef;
+  @ViewChild('drop') drop:ElementRef;
   playlists : Playlist[] = [];
   selection : SelectItem[] = [];
-  selectedPlaylist : String = '';
+  selectedPlaylist : Playlist;
   selectedSongs : SelectItem[] = [];
   songsList : SelectItem[] = [];
   results : String[] = [];
-  searchText = 'search';
-  faSearch = faSearch;
-  faPlus = faPlus;
+  searchText : String;
   display: boolean = false;
   newPlaylist: String;
 
@@ -37,32 +34,39 @@ export class AppComponent {
         this.playlists = data;
         this.playlists.forEach(function(p) {
           console.log(p['name']);
-          this.selection.push({name:p['name'], value:p} as SelectItem);
-          this.drop.nativeElement.onchange();
+          this.selection.push(p);
         }, this);
-        this.selectedPlaylist = this.selection[0].label || "None";
-        console.log('playlists:', this.playlists, this.selection, this.selectedPlaylist );
-        console.log('drop:', this.drop);
+        this.selectedPlaylist = this.selection[0] || "None";
       });
     console.log('PlayerComponent Constructor executed.');
   }
 
-  create() {
-    console.log(this.selectedPlaylist);
+  create(event, el) {
+    var id: String;
+
+    el.hide(event)
+    this.playlistService.createPlaylist(this.newPlaylist)
+      .subscribe(
+        data => {
+          console.log('response', data);
+          if (data != 'folder exists') { id = data } 
+        }
+      )
+
   }
 
   search() {
-    console.log('text: ',this.searchText);
+    console.log('text: ', this.searchText);
     this.playlistService.getSongs(this.searchText)
       .subscribe(
         data => {
-          this.results = data['results'];
+          this.results = data;
           this.songsList.length = 0;
-          console.log('response:',this.results);
-          console.log('result :',this.results.length,this.results);
+          console.log('response:', this.results);
+          console.log('result :', this.results.length, this.results);
           for (var i = 0, len = this.results.length; i < len; i++) {
             this.songsList.push({
-              label:this.results[i].substr(0,this.results[i].length-13),
+              label:this.results[i].substr(0, this.results[i].length-13),
               value:{title:this.results[i]}
             } as SelectItem);
           }
