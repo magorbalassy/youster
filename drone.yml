@@ -5,7 +5,7 @@ name: default
 
 steps:
 - name: deploy new Google Drive backend
-  image: ubuntu/base:latest
+  image: archlinux/base:latest
   environment: 
     USERNAME:
       from_secret: gc.username
@@ -17,4 +17,3 @@ steps:
   - echo $KEY > ~/.ssh/id_rsa
   - git clone github.com/magorbalassy/youster
   - scp youster/download_backend/download_backend.py ${USERNAME}@gc.maz.si:download_backend/
-  
