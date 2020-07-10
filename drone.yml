@@ -1,16 +1,15 @@
 ---
 kind: pipeline
-type: docker
-name: default
+type: scp
 
-steps:
 - name: deploy new Google Drive backend
   image: appleboy/drone-scp
-  host: gc.maz.si
-  username: 
-    from_secret: gc.username
-  key:
-    from_secret: gc.password
-  target: download_backend/
-  source:
-    - download_backend/download_backend.py
+  settings:
+    host: gc.maz.si
+    username: 
+      from_secret: gc.username
+    key:
+      from_secret: gc.password
+    target: download_backend/
+    source:
+      - download_backend/download_backend.py
