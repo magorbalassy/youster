@@ -1,6 +1,5 @@
 ---
 kind: pipeline
-type: scp
 
 - name: deploy new Google Drive backend
   image: appleboy/drone-scp
