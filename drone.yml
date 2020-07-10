@@ -13,7 +13,6 @@ steps:
       from_secret: gc.password
   commands:
   - cd /tmp
-  - sudo apt install openssh-server -y
   - echo $KEY > ~/.ssh/id_rsa
   - git clone github.com/magorbalassy/youster
   - scp youster/download_backend/download_backend.py ${USERNAME}@gc.maz.si:download_backend/
