@@ -1,6 +1,7 @@
 ---
 kind: pipeline
 type: docker
+name: Deploy Google Drive backend
 
 - name: deploy new Google Drive backend
   image: appleboy/drone-scp
