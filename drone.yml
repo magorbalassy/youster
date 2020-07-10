@@ -15,5 +15,6 @@ steps:
   - cd /tmp
   - mkdir ~/.ssh
   - echo $KEY > ~/.ssh/id_rsa
+  - aptt install git -y
   - git clone github.com/magorbalassy/youster
   - scp youster/download_backend/download_backend.py ${USERNAME}@gc.maz.si:download_backend/
