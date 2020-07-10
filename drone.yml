@@ -1,0 +1,18 @@
+---
+kind: pipeline
+type: ssh
+name: default
+
+server:
+  host: gc.maz.si
+  user:
+    from_secret: gc.username
+  password:
+    from_secret: gc.password
+
+steps:
+- name: deploy new Google Drive backend
+  commands:
+  - cd /tmp
+  - git clone github.com/magorbalassy/youster
+  - cp youster/download_backend/download_backend.py ~/download_backend/

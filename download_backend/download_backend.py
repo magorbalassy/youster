@@ -64,8 +64,8 @@ def copy_to_drive(filename,playlist):
         return {'File ID':file.get('id')}
 
     print(filename)
-    if os.path.getsize(filename) < 5242880:
-      api_media_upload(filename)
+    #if os.path.getsize(filename) < 5242880:
+    api_media_upload(filename)
 
 @app.before_request
 def before_request():
