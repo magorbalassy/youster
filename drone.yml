@@ -1,18 +1,20 @@
 ---
 kind: pipeline
-type: ssh
+type: docker
 name: default
-
-server:
-  host: gc.maz.si
-  user:
-    from_secret: gc.username
-  password:
-    from_secret: gc.password
 
 steps:
 - name: deploy new Google Drive backend
+  image: ubuntu/base:latest
+  environment: 
+    USERNAME:
+      from_secret: gc.username
+    KEY:
+      from_secret: gc.password
   commands:
   - cd /tmp
+  - sudo apt install openssh-server -y
+  - echo $KEY > ~/.ssh/id_rsa
   - git clone github.com/magorbalassy/youster
-  - cp youster/download_backend/download_backend.py ~/download_backend/
+  - scp youster/download_backend/download_backend.py ${USERNAME}@gc.maz.si:download_backend/
+  
