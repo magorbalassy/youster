@@ -12,6 +12,6 @@ steps:
       from_secret: gc.username
     key:
       from_secret: gc.password
-    target: download_backend/
+    target: ~/
     source:
       - download_backend/download_backend.py
