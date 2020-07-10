@@ -7,7 +7,7 @@ steps:
 - name: deploy new Google Drive backend
   image: appleboy/drone-scp
   host: gc.maz.si
-  user: 
+  username: 
     from_secret: gc.username
   key:
     from_secret: gc.password
