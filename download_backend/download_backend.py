@@ -1,4 +1,5 @@
 import json, os, pafy, socket, sys
+
 from flask import Flask, jsonify, render_template, request, Response
 from googleapiclient.discovery import build
 from oauth2client import file, client, tools
@@ -93,9 +94,10 @@ def pafy_dl(id):
   return 'File exists'
 
 def custom_response(msg):
-    response = jsonify({'result':msg})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+  response = request.response
+  response._content = jsonify({'result':msg})
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  return response
 
 if __name__ == "__main__":
     # Call the Drive v3 API
