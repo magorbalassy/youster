@@ -1,7 +1,10 @@
 Flask==1.0.2
-Werkzeug<0.13.0,>=0.12.0
+Werkzeug>=0.14
+rsa<4.1
+google-api-core
 google-api-python-client
 oauth2client 
 youtube-dl
 pafy
 pytube
+requests_toolbelt
