@@ -21,7 +21,6 @@ logging.basicConfig(filename='search.log',level=logging.DEBUG,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
 DEVELOPER_KEY = "Please use your own API key"
-DEVELOPER_KEY = "AIzaSyDybVJjDFJwLes34-CXgS5RIuAQ6yI_TEM"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
