@@ -1,13 +1,14 @@
 export class Playlist {
   name : String;
-  id : number;
-  location : String;
+  drive_id: String;
+  visbility : String;
 }
 
 export class Song {
   title : String;
-  location : String;
-  playlist : number;
-  id : number;
+  playlist : String;
+  filename : String;
+  drive_id: String;
+  youtube_id: String;
 }
 

@@ -1,18 +1,35 @@
-import json, os, pafy, socket, sys
+import json, logging, os, pafy, socket, sys
 
 from flask import Flask, jsonify, render_template, request, Response
 from googleapiclient.discovery import build
+from apiclient.http import MediaFileUpload
 from oauth2client import file, client, tools
 from httplib2 import Http
+from werkzeug.utils import secure_filename
 
 SCOPES = 'https://www.googleapis.com/auth/drive'
 # We define the default parent folder name from Google drive for the Playlists
-PLAYLISTS_FOLDER_NAME='Playlists'
+PLAYLISTS_FOLDER_NAME = 'Playlists'
 
 app = Flask(__name__)
 
-class Drive:
+logging.basicConfig(filename='drive.log',level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
 
+class Drive:
+  """ 
+  This the class which provides the interface to handle the required operetions
+  with the Google Drive Api.
+    
+  Attributes: 
+      service: The Drive API instance 
+      PLAYLISTS_FOLDER_ID (str): The Drive ID of the folder where the playlist are stored
+
+  Methods:
+      __init__: constructor, will dinitialize Drive service and get the id of the folder
+                containing the playlists 
+  """
   def __init__(self):
     self.service = self.connect()
     self.PLAYLISTS_FOLDER_ID = self.get_id_by_name(PLAYLISTS_FOLDER_NAME)
@@ -55,47 +72,61 @@ class Drive:
     return str(items[0]['id'])
 
 # Copy file to the specified Drive folder
-def copy_to_drive(filename,playlist):
-    def api_media_upload(filename):
-        file_metadata = {'name' : filename, 'parents' : PLAYLISTS_FOLDER_ID}
-        media = MediaFileUpload(filename,mimetype='audio/mp4')
-        file = drive_service.files().create(body=file_metadata,
-                                    media_body=media,
-                                    fields='id').execute()
-        return {'File ID':file.get('id')}
-
-    print(filename)
-    #if os.path.getsize(filename) < 5242880:
-    api_media_upload(filename)
+  def copy_to_drive(self, filename, playlist):
+      def api_media_upload(filename):
+          parent = []
+          parent.append(self.get_id_by_name(playlist))
+          logging.info('Parent %s folder id: %s' %(playlist, parent))
+          file_metadata = {'name' : filename, 'parents' : parent}
+          media = MediaFileUpload(filename, mimetype='audio/mp4')
+          file = self.service.files().create(body=file_metadata,
+                                      media_body=media,
+                                      fields='id').execute()
+          return file.get('id')
+      return api_media_upload(filename)
 
 @app.before_request
 def before_request():
     if request.remote_addr != socket.gethostbyname('maz.si'):
         return custom_response("Requests from your IP are not allowed.")
 
-@app.route('/download/<string:id>')
-def download(id):
-    return custom_response(pafy_dl(id))
+@app.route('/download/', methods=['GET', 'POST'])
+def download():
+  if request.method == "GET":
+    logging.info('GET request')
+    return custom_response('GET request')
+  elif request.method == "POST":
+    logging.info('POST request  %s ' % str(request.form) )
+    drive_id, filename = pafy_dl(request.form['youtube_id'], request.form['playlist'])
+    return custom_response({
+      'drive_id': drive_id,
+      'filename': filename
+    })
+  else:
+    return
 
 @app.route('/createpl/<string:name>')
 def create(name):
   return custom_response(drive.create_folder(name))
 
-@app.route('/move/')
-def move():
-  pass
+def progress(total, recvd, ratio, rate, eta):
+  logging.info('%s '% str((total, recvd, ratio, rate, eta)))
 
-def pafy_dl(id):
-  vid = pafy.new(id)
+def pafy_dl(youtube_id, playlist):
+  vid = pafy.new(youtube_id)
   mp3 = vid.getbestaudio("m4a")
-  if not os.path.isfile(mp3.title+'.'+mp3.extension):
-    filename = mp3.download()
-    return str(filename).strip("'")
+  filename = secure_filename(mp3.title + '.' + mp3.extension.lower())
+  logging.info('Downloading filename %s' % filename)
+  if not os.path.isfile(filename):
+    mp3.download(filename, callback=progress)
+    logging.info('Downloaded filename %s' % filename)
+    drive_id = drive.copy_to_drive(filename, playlist)
+    logging.info('Copied to drive %s, parent folder %s, drive_id %s' % (filename, playlist, drive_id) )
+    return drive_id, filename
   return 'File exists'
 
 def custom_response(msg):
-  response = request.response
-  response._content = jsonify({'result':msg})
+  response = jsonify({'results':msg})
   response.headers.add('Access-Control-Allow-Origin', '*')
   return response
 

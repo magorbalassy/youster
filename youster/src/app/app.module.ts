@@ -3,17 +3,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { PlaylistService } from './app.service';
-import {DropdownModule} from 'primeng/dropdown';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {InputTextModule} from 'primeng/inputtext';
-import {ListboxModule} from 'primeng/listbox';
-import {OverlayPanelModule} from 'primeng/overlaypanel';
-//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-//import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ListboxModule } from 'primeng/listbox';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import {ToastModule} from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 
 @NgModule({
@@ -23,8 +24,8 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    //FontAwesomeModule,
     FormsModule,
+    HttpClientModule,
     HttpModule,
     ButtonModule,
     DropdownModule,
@@ -32,9 +33,9 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
     InputTextModule,
     ListboxModule,
     OverlayPanelModule,
-    //AngularFontAwesomeModule
+    ToastModule,
   ],
-  providers: [PlaylistService],
+  providers: [PlaylistService, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

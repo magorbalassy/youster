@@ -21,6 +21,7 @@ logging.basicConfig(filename='search.log',level=logging.DEBUG,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
 DEVELOPER_KEY = "Please use your own API key"
+DEVELOPER_KEY = "AIzaSyDybVJjDFJwLes34-CXgS5RIuAQ6yI_TEM"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -36,8 +37,6 @@ def youtube_search(searchtext):
   ).execute()
 
   videos = []
-  channels = []
-  playlists = []
 
   # Add each result to the appropriate list, and then return the lists of
   # matching videos.
@@ -54,8 +53,10 @@ def custom_response(msg):
   response.headers.add('Access-Control-Allow-Origin', '*')
   return response
 
-def create_playlist():
-  pass
+def create_playlist(playlist):
+  r = requests.get('http://gc.maz.si/createpl/%s' % playlist)
+  return r.json()['results']
+
 
 '''@app.errorhandler(HTTPException)
 def handle_exception(e):
@@ -81,6 +82,10 @@ def index():
 def search(search_string):
     return custom_response(youtube_search(search_string))
 
+@app.route('/rest/drive', methods=['POST'])
+def drive():
+    return custom_response(requests.post('http://gc.maz.si/download/',
+      data=request.form).json()['results'])
 
 @app.route('/rest/playlists/<string:name>', methods=['GET', 'POST'])
 @app.route('/rest/playlists', methods=['GET', 'POST'])
@@ -89,20 +94,20 @@ def playlists(name=None):
   playlists = Playlist.query().fetch()
   if request.method == 'GET':
     if len(playlists) == 0 :
+      unc = Playlist(name='Uncategorized',
+                     visibility='public',
+                     drive_id=create_playlist('Uncategorized')['drive_id'])
       unc_key = unc.put()
-      unc = Playlist(name='Uncategorized', visibility='public', drive_id=unc_key)
       playlists.append(unc)
     for playlist in playlists:
       res.append(playlist.serialize())
-    print(res)
     return custom_response(res)
   elif request.method == 'POST':
     p_names = [ p.name for p in playlists]
     if name in p_names:
       return custom_response('exists')
     else:
-      r = requests.get('http://gc.maz.si/createpl/%s' % name)
-      drive_id = r.json()['results']
+      drive_id = create_playlist(name)['drive_id']
       p = Playlist(name=name, drive_id=drive_id, visibility='public')
       p.put()
       return custom_response(p.serialize())

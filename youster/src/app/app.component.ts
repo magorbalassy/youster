@@ -5,51 +5,67 @@ import { Playlist } from './models';
 import { Song } from './models';
 import 'rxjs/add/operator/map'
 import { SelectItem } from 'primeng/api';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import {TooltipModule} from 'primeng/tooltip';
+import {ToastModule} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
 
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [MessageService]
 })
 export class AppComponent {
   @ViewChild('drop') drop:ElementRef;
   playlists : Playlist[] = [];
   selection : SelectItem[] = [];
   selectedPlaylist : Playlist;
-  selectedSongs : SelectItem[] = [];
+  selectedSongs : Song[] = [];
   songsList : SelectItem[] = [];
   results : String[] = [];
   searchText : String;
   display: boolean = false;
   newPlaylist: String;
 
-
-  constructor(private playlistService: PlaylistService){
+  constructor(private playlistService: PlaylistService,
+              private messageService: MessageService) {
     console.log('PlayerComponent Constructor  started');
     playlistService.getPlaylists()
       .subscribe(
       data => {
-        this.playlists = data;
+        console.log('getPlaylists() response data:', data);
+        this.playlists = data['results'];
+        this.selectedPlaylist = this.playlists[0];
         this.playlists.forEach(function(p) {
-          console.log(p['name']);
           this.selection.push(p);
         }, this);
-        this.selectedPlaylist = this.selection[0] || "None";
       });
     console.log('PlayerComponent Constructor executed.');
   }
 
-  create(event, el) {
+  create(el: OverlayPanel) {
     var id: String;
 
-    el.hide(event)
+    el.hide()
     this.playlistService.createPlaylist(this.newPlaylist)
       .subscribe(
         data => {
-          console.log('response', data);
-          if (data != 'folder exists') { id = data } 
+          if (JSON.stringify(data) != JSON.stringify("exists")) { 
+            console.log('Created playlist folder and db item', JSON.stringify(data));
+            this.playlists.push(data);
+            this.selection = [];
+            this.playlists.forEach(function(p) {
+              this.selection.push(p);
+            }, this);
+            this.messageService.add({key: 'pl', severity:'success', summary: 'Created folder.'});
+          }
+          else {
+            console.log('Folder exists.');
+            this.messageService.add({key: 'pl', severity:'error', summary: 'Folder exists on Drive'});
+          }
         }
       )
 
@@ -62,13 +78,20 @@ export class AppComponent {
         data => {
           this.results = data;
           this.songsList.length = 0;
+          this.selectedSongs = [];
           console.log('response:', this.results);
           console.log('result :', this.results.length, this.results);
           for (var i = 0, len = this.results.length; i < len; i++) {
             this.songsList.push({
               label:this.results[i].substr(0, this.results[i].length-13),
-              value:{title:this.results[i]}
-            } as SelectItem);
+              value:{ 
+                title:this.results[i], 
+                playlist:this.selectedPlaylist.name, 
+                youtube_id:this.results[i].slice(length-12,length-1),
+                drive_id:'',
+                filename:'',
+              } as Song
+            } );
           }
           console.log('songlist:',this.songsList);
         }
@@ -76,14 +99,14 @@ export class AppComponent {
   }
 
  download() {
-   console.log(this.selectedSongs[0].label);
-  this.playlistService.downloadService(this.selectedSongs[0].title)
+  console.log(this.selectedSongs[0].youtube_id);
+  this.playlistService.downloadService(this.selectedSongs[0])
     .subscribe(
       data => {
         console.log('response from download:',data);
+
       }
     );
-  console.log('download:',this.selectedSongs);
  } 
 
 }

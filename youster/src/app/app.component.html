@@ -10,19 +10,25 @@
           </p-dropdown>
         </span>
         &nbsp;
-        <button pButton type="button" pTooltip="Create" icon="pi pi-plus" (click)="op.toggle($event)">
+        <button pButton type="button" pTooltip="Create" tooltipPosition="top" icon="pi pi-plus" (click)="op.toggle($event)">
           
         </button>
         <p-overlayPanel #op [dismissable]="true" >
             New playlist :
-            <input id="input" autofocus type="text" size="20" pInputText [(ngModel)]="newPlaylist">
+            <input id="input" autofocus type="text" 
+                   size="20" pInputText [(ngModel)]="newPlaylist" 
+                   (keyup.enter)="create(op)">
             <span>
-              &nbsp;<button pButton type="button" icon="pi pi-check" (click)="create($event, op)"></button>
+              &nbsp;<button pButton type="button" icon="pi pi-check" (click)="create(op)"></button>
             </span>             
         </p-overlayPanel>
-        <h5>
+
+        <!--<h5>
           <p>Selected playlist: {{selectedPlaylist ? selectedPlaylist.name : 'none'}}</p>
-        </h5>
+        </h5>-->
+        <div>
+          <p-toast position='top-center' key='pl'></p-toast>
+        </div>
       </p-card>
       <p-card [style]="{width: '400px'}" styleClass="ui-card-shadow">
         <br>
