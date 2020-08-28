@@ -21,7 +21,18 @@ The program is split in to 3 parts:
 
 # Dependencies and required libraries 
 
-### Download Backend
+### Frontend
+
+Angular 10 :
+npm install -g @angular/cli @angular/core
+
+Need the libraries:
+@angular/cdk @angular/http primeicons primeng rxjs-compat
+
+Frontent is structured into components.  
+Components are the most basic UI building block of an Angular app. An Angular app contains a tree of Angular components. Angular components are a subset of directives, always associated with a template. Unlike other directives, only one component can be instantiated for a given element in a template.(https://angular.io/api/core/Component)
+
+### Drive Backend
 
 This runs on the free 720 hours/month f1-micro vm of GCP (North America zone).
 

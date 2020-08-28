@@ -18,7 +18,6 @@ class Playlist(ndb.Model):
     }
 
   drive_id = ndb.StringProperty()
-  youtube_id = ndb.StringProperty()
   name = ndb.StringProperty()
   visibility = ndb.StringProperty()
   

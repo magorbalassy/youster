@@ -2,3 +2,4 @@ youster/dist
 lib/
 youster/node_modules
 *.pyc
+*.key

@@ -10,7 +10,7 @@ from flask import Flask, jsonify, render_template, request, Response
 from google.appengine.ext import ndb
 
 # My imports
-import json, logging, requests
+import json, logging, os, requests
 from models import Playlist, Track, User
 
 app = Flask(__name__)
@@ -20,13 +20,16 @@ logging.basicConfig(filename='search.log',level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
-DEVELOPER_KEY = "Please use your own API key"
+YOUTUBE_API_KEY = "Please use your own API key"
+with open('youtube_api.key') as f:
+  YOUTUBE_API_KEY = f. readline()
+print('Yotube API key: %s' % YOUTUBE_API_KEY)
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 def youtube_search(searchtext):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-                  developerKey=DEVELOPER_KEY)
+                  developerKey=YOUTUBE_API_KEY)
 
   search_response = youtube.search().list(
       q=searchtext,
@@ -86,8 +89,8 @@ def drive():
     return custom_response(requests.post('http://gc.maz.si/download/',
       data=request.form).json()['results'])
 
-@app.route('/rest/playlists/<string:name>', methods=['GET', 'POST'])
-@app.route('/rest/playlists', methods=['GET', 'POST'])
+@app.route('/rest/playlists/<string:name>', methods=['POST'])
+@app.route('/rest/playlists', methods=['GET'])
 def playlists(name=None):
   res = []
   playlists = Playlist.query().fetch()
