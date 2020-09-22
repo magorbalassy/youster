@@ -12,6 +12,7 @@ from google.appengine.ext import ndb
 # My imports
 import json, logging, os, requests
 from models import Playlist, Track, User
+from HTMLParser import HTMLParser
 
 app = Flask(__name__)
 requests_toolbelt.adapters.appengine.monkeypatch()
@@ -45,7 +46,7 @@ def youtube_search(searchtext):
   logging.info('searchresult %s' % [ _["id"]["kind"] for _ in search_response.get("items",[])] )
   for search_result in search_response.get("items", []):
     if search_result["id"]["kind"] == "youtube#video":
-      videos.append("%s (%s)" % (search_result["snippet"]["title"],
+      videos.append("%s (%s)" % (HTMLParser().unescape(search_result["snippet"]["title"]),
                                  search_result["id"]["videoId"]))
   logging.info('Search result for %s: %s, %d elements.' %(searchtext, videos, len(videos)))
   return videos
