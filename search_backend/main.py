@@ -23,7 +23,7 @@ logging.basicConfig(filename='search.log',level=logging.DEBUG,
 
 YOUTUBE_API_KEY = "Please use your own API key"
 with open('youtube_api.key') as f:
-  YOUTUBE_API_KEY = f. readline()
+  YOUTUBE_API_KEY = f.readline()
 print('Yotube API key: %s' % YOUTUBE_API_KEY)
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"

@@ -1,8 +1,15 @@
-import { Injectable } from '@angular/core'
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
-import { Playlist, Song } from './models'
+import { Playlist, Song } from '../models'
 
+@Injectable({
+  providedIn: 'root'
+})
+export class BackendService {
+
+  constructor() { }
+}
 
 @Injectable()
 export class PlaylistService {

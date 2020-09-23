@@ -1,0 +1,26 @@
+<mat-toolbar #toolbar color="accent">
+    <span>
+        <button mat-icon-button (click)="clickMenu()" [disabled]="!afAuthServ.isLoggedIn">
+            <mat-icon *ngIf="menuOpened">menu_opened</mat-icon>
+            <mat-icon *ngIf="!menuOpened">menu</mat-icon>
+        </button>
+    </span>
+    <span><img src="/assets/img/youster-logo.png"><img></span>
+    <span class="fill-remaining-space"></span>
+    <div *ngIf="!this.afAuthServ.isLoggedIn" class="center">
+        <button mat-button (click)="this.afAuthServ.login()">
+            <img src="/assets/img/btn_google_signin_dark_disabled_web.png" border="0" alt="">
+        </button>
+    </div>
+    <span *ngIf="this.afAuthServ.isLoggedIn">
+        <button mat-icon-button routerLink='/search'>
+            <mat-icon aria-hidden="false" aria-label="Search">search</mat-icon>
+        </button>
+        <button mat-icon-button>
+            <mat-icon aria-hidden="false" aria-label="User">account_box</mat-icon>
+        </button>
+        <button mat-icon-button (click)="this.afAuthServ.logout()">
+            <mat-icon aria-hidden="false" aria-label="Logout">login</mat-icon>
+        </button>
+    </span>
+</mat-toolbar>

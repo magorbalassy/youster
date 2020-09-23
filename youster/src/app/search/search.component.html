@@ -1,0 +1,58 @@
+<h3>
+  <p-card header="Search" #playlistDrop class="box p-shadow-24">
+    <div *ngIf="selection.length > 0">
+        <div class="p-formgroup-inline">
+          <span class="p-float-label">
+            <input id="input1" type="text" size="50" pInputText [(ngModel)]="searchText" (keyup.enter)="search()" >
+            <label for="input1">Search YouTube</label>
+            &nbsp;
+            <button pButton type="button" id="search" icon="pi pi-search" (click)="search()"></button>
+          </span>
+        </div>
+        <br>
+        <p-card header="Drive" styleClass="ui-card-shadow">
+          <p-label>Folder : </p-label>
+            <p-dropdown #drop [options]="selection" 
+            [(ngModel)]="selectedPlaylist" 
+            placeholder="Select playlist"
+            optionLabel="name">
+          </p-dropdown>
+          &nbsp;
+          <span #oPtarget>
+            <button pButton type="button" pTooltip="Create" tooltipPosition="top" icon="pi pi-plus"
+                    (click)="op.toggle($event,oPtarget)">
+            </button>
+          </span>
+          <p-overlayPanel #op [dismissable]="true" >
+            <ng-template pTemplate>
+            New playlist :
+            <input id="input" autofocus type="text" 
+            size="20" pInputText [(ngModel)]="newPlaylist" 
+            (keyup.enter)="create(op)">
+            <span>
+              &nbsp;<button pButton type="button" icon="pi pi-check" (click)="create(op)"></button>
+            </span>
+            </ng-template>
+          </p-overlayPanel>
+          &nbsp;
+          <button pButton type="button" label="Make available on Drive" pTooltip="Get to Drive"
+                  tooltipPosition="top" (click)="download()" icon="pi pi-download">
+          </button>
+        <div *ngIf="songsList.length > 0">
+          <br>
+          <p-listbox [options]="songsList" [(ngModel)]="selectedSongs" multiple="multiple" 
+                      filter="filter" checkbox="checkbox">
+            <p-header>
+              <i class="pi pi-music"></i><span> Results</span>
+            </p-header>
+          </p-listbox>
+        </div>
+        <div>
+          <p-toast position='top-center' key='pl'></p-toast>
+        </div>
+      </p-card>
+    <p>Selected songs: <span *ngFor="let s of selectedSongs" style="margin-right: 10px">{{s.title}}</span></p>
+  </div>
+</p-card>
+
+</h3>
