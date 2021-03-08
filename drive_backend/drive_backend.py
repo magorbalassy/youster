@@ -48,7 +48,7 @@ class Drive:
         pcs = item.split()
         if 'folder' in pcs[2] and pcs[0] == folderName:
             return 'folder exists'
-      # Create a folder on Drive, returns the newely created folders ID
+      # Create a folder on Drive, returns the newly created folders ID
       body = {
           'name': folderName,
           'mimeType': "application/vnd.google-apps.folder",

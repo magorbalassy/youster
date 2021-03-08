@@ -1,5 +1,6 @@
 youster/dist
 lib/
 youster/node_modules
+youster/src/environments
 *.pyc
 *.key

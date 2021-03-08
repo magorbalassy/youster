@@ -12,3 +12,11 @@ export class Song {
   youtube_id: String;
 }
 
+export class Track {
+  title : String;
+  playlist : String;
+  tags: Array<String>;
+  drive_id: String;
+  youtube_id: String;
+  filename : String;
+}

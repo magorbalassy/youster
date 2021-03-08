@@ -25,6 +25,12 @@ export class PlaylistService {
     return this.http.get(url);
   }
 
+  getTracks(): Observable<String[]> {
+    const url = `http://192.168.10.10:8080/rest/tracks`;
+    return this.http.get(url)
+      .map(res=>res['results']);
+  }
+
   createPlaylist(name?: String): Observable<Playlist> {
     //switching to ui<->single backend mode
     //var url = `http://gc.maz.si/createpl/${name}`;
@@ -42,7 +48,7 @@ export class PlaylistService {
     }
   }
 
-  getSongs(text: String): Observable<String[]> {
+  getSearchResult(text: String): Observable<String[]> {
     const url = `http://192.168.10.10:8080/rest/search/${text}`;
     console.log('search text:',text, url);
     return this.http.get(url)

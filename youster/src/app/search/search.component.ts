@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { PlaylistService } from '../backend/backend.service';
 import { Playlist } from '../models';
-import { Song } from '../models';
+import { Song, Track } from '../models';
 import 'rxjs/add/operator/map'
 import { SelectItem } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -21,9 +21,10 @@ import {MessageService} from 'primeng/api';
 export class SearchComponent  {
   @ViewChild('drop') drop:ElementRef;
   playlists : Playlist[] = [];
+  tracks : Track[] = [];
   selection : SelectItem[] = [];
   selectedPlaylist : Playlist;
-  selectedSongs : Song[] = [];
+  selectedSongs : Track[] = [];
   songsList : SelectItem[] = [];
   results : String[] = [];
   searchText : String;
@@ -34,8 +35,7 @@ export class SearchComponent  {
               private messageService: MessageService) {
     console.log('PlayerComponent Constructor  started');
     playlistService.getPlaylists()
-      .subscribe(
-      data => {
+      .subscribe( data => {
         console.log('getPlaylists() response data:', data);
         this.playlists = data['results'];
         this.selectedPlaylist = this.playlists[0];
@@ -43,7 +43,13 @@ export class SearchComponent  {
           this.selection.push(p);
         }, this);
       });
-    console.log('PlayerComponent Constructor executed.');
+    console.log('Getting tracks.')
+    playlistService.getTracks()
+      .subscribe( data => {
+        console.log('getTracks() response data:', data);
+        this.tracks = data['results'];
+      });
+      console.log('PlayerComponent Constructor executed.');
   }
 
   create(el: OverlayPanel) {
@@ -73,7 +79,7 @@ export class SearchComponent  {
 
   search() {
     console.log('text: ', this.searchText);
-    this.playlistService.getSongs(this.searchText)
+    this.playlistService.getSearchResult(this.searchText)
       .subscribe(
         data => {
           this.results = data;
@@ -83,9 +89,9 @@ export class SearchComponent  {
           console.log('result :', this.results.length, this.results);
           for (var i = 0, len = this.results.length; i < len; i++) {
             this.songsList.push({
-              label:this.results[i].substr(0, this.results[i].length-13),
+              label:this.results[i].substr(0, this.results[i].length-14),
               value:{ 
-                title:this.results[i], 
+                title:this.results[i].substr(0, this.results[i].length-14), 
                 playlist:this.selectedPlaylist.name, 
                 youtube_id:this.results[i].slice(length-12,length-1),
                 drive_id:'',

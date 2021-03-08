@@ -13,13 +13,28 @@
         </button>
     </div>
     <span *ngIf="this.afAuthServ.isLoggedIn">
-        <button mat-icon-button routerLink='/search'>
+        <button mat-icon-button #tooltip="matTooltip"
+            matTooltip="Show folders and content"
+            matTooltipPosition="below"
+            matTooltipHideDelay="100">
+            <mat-icon aria-hidden="false" aria-label="Inventory">list</mat-icon>
+        </button>
+        <button mat-icon-button routerLink='/search' #tooltip="matTooltip"
+            matTooltip="Search YouTube"
+            matTooltipPosition="below"
+            matTooltipHideDelay="100">
             <mat-icon aria-hidden="false" aria-label="Search">search</mat-icon>
         </button>
-        <button mat-icon-button>
+        <button mat-icon-button #tooltip="matTooltip"
+            matTooltip="User account details"
+            matTooltipPosition="below"
+            matTooltipHideDelay="100">
             <mat-icon aria-hidden="false" aria-label="User">account_box</mat-icon>
         </button>
-        <button mat-icon-button (click)="this.afAuthServ.logout()">
+        <button mat-icon-button (click)="this.afAuthServ.logout()" #tooltip="matTooltip"
+            matTooltip="Logout"
+            matTooltipPosition="below"
+            matTooltipHideDelay="100">
             <mat-icon aria-hidden="false" aria-label="Logout">login</mat-icon>
         </button>
     </span>

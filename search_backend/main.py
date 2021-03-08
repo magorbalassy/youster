@@ -24,7 +24,6 @@ logging.basicConfig(filename='search.log',level=logging.DEBUG,
 YOUTUBE_API_KEY = "Please use your own API key"
 with open('youtube_api.key') as f:
   YOUTUBE_API_KEY = f.readline()
-print('Yotube API key: %s' % YOUTUBE_API_KEY)
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -87,8 +86,16 @@ def search(search_string):
 
 @app.route('/rest/drive', methods=['POST'])
 def drive():
-    return custom_response(requests.post('http://gc.maz.si/download/',
-      data=request.form).json()['results'])
+  track = Track()
+  track.title = request.form['title']
+  track.youtube_id = request.form['youtube_id']
+  track.playlist = request.form['playlist']
+  r = requests.post('http://gc.maz.si/download/', data=request.form)
+  if r.status_code == 200:
+    track.drive_id = r.json()['results']['drive_id']
+    track.filename = r.json()['results']['filename']
+    track_key = track.put()
+  return custom_response(r.json()['results'])
 
 @app.route('/rest/playlists/<string:name>', methods=['POST'])
 @app.route('/rest/playlists', methods=['GET'])
@@ -115,8 +122,12 @@ def playlists(name=None):
       p.put()
       return custom_response(p.serialize())
 
-@app.route('/rest/tracks', methods=['GET', 'POST'])
+@app.route('/rest/tracks', methods=['GET'])
 def tracks():
-  tracks = Track.query().fetch()
-  return str(tracks)
-  
+  if request.method == 'GET':
+    res = []
+    tracks = Track.query().fetch()
+    for track in tracks:
+      res.append(track.serialize())
+    return custom_response(res)
+

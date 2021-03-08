@@ -36,6 +36,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { HomeComponent } from './home/home.component';
 import { FormsModule } from '@angular/forms';
 
@@ -78,6 +79,7 @@ const config = {
     MatSidenavModule,
     MatTabsModule,
     MatToolbarModule,
+    MatTooltipModule,
     ButtonModule,
     DropdownModule,
     CardModule,

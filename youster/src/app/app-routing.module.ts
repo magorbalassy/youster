@@ -6,7 +6,7 @@ import { SearchComponent } from './search/search.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path:  '', component:  HomeComponent},
+  { path:  '', component:  SearchComponent},
   { path:  'home', component:  HomeComponent },
   { path:  'search', component:  SearchComponent, canActivate: [AuthGuard] }
 ];

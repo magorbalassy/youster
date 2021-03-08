@@ -14,4 +14,4 @@ steps:
       from_secret: gc.password
     target: ~/
     source:
-      - download_backend/download_backend.py
+      - drive_backend/drive_backend.py
