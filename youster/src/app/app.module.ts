@@ -2,7 +2,6 @@ import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
@@ -68,7 +67,6 @@ const config = {
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    HttpModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

@@ -1,5 +1,4 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import { PlaylistService } from '../backend/backend.service';
 import { Playlist } from '../models';
 import { Song, Track } from '../models';
