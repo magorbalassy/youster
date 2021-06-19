@@ -46,9 +46,9 @@ export class SearchComponent  {
     playlistService.getTracks()
       .subscribe( data => {
         console.log('getTracks() response data:', data);
-        this.tracks = data['results'];
+        this.tracks = data;
       });
-      console.log('PlayerComponent Constructor executed.');
+    console.log('PlayerComponent Constructor executed.');
   }
 
   create(el: OverlayPanel) {
@@ -104,7 +104,20 @@ export class SearchComponent  {
   }
 
  download() {
-  console.log(this.selectedSongs[0].youtube_id);
+  var  keepGoing : Boolean = true;
+  console.log('Existing tracks', this.tracks, this.selectedSongs[0]);
+  this.tracks.forEach(element => {
+    if (keepGoing){
+    if (element['youtube_id'] == this.selectedSongs[0]['youtube_id']) {
+      this.messageService.add({key: 'pl', severity:'error', summary: 'File exists on Drive'})
+      keepGoing = false;
+    }
+    };    
+  });
+  if (!keepGoing){
+    return;
+  }
+  this.messageService.add({key: 'pl', severity:'success', summary: 'Starting download'});
   this.playlistService.downloadService(this.selectedSongs[0])
     .subscribe(
       data => {
