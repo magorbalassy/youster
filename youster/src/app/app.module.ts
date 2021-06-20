@@ -40,6 +40,7 @@ import { HomeComponent } from './home/home.component';
 import { FormsModule } from '@angular/forms';
 
 import {environment} from "../environments/environment";
+import { UserComponent } from './user/user.component';
 
 const config = {
   apiKey: environment.apiKey,
@@ -57,7 +58,8 @@ const config = {
     ToolbarComponent,
     SearchComponent,
     BodyComponent,
-    HomeComponent
+    HomeComponent,
+    UserComponent
   ],
   imports: [
     AngularFireModule.initializeApp(config),

@@ -13,7 +13,7 @@ export class ToolbarComponent {
   menuOpened : boolean = false;
 
   constructor(public afAuthServ: AuthService, private menuService: MenuService) {
-    console.log('isloggedin', this.afAuthServ.user  !==  null)
+    console.log('isloggedin', this.afAuthServ.user)
    }
 
   clickMenu() { 

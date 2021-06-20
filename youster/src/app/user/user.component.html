@@ -1,0 +1,23 @@
+<p>
+    <mat-card>  
+        <mat-card-header>
+            <mat-card-title>User profile</mat-card-title>
+            <mat-card-subtitle>read-only</mat-card-subtitle>
+
+          </mat-card-header>
+    <mat-card-content>
+        <form>
+            <mat-form-field>
+              <mat-label>Full name</mat-label>
+              <input matInput readonly=true value={{this.user}}>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+              <mat-label>Email</mat-label>
+              <input matInput readonly=true value={{this.email}}>
+            </mat-form-field>
+          </form>
+    </mat-card-content>
+    </mat-card>
+
+</p>

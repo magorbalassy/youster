@@ -16,6 +16,7 @@ export  class  AuthService {
       if (user){
         this.user = user;
         localStorage.setItem('user', JSON.stringify(this.user));
+        console.log('User:',user.displayName);
       } else {
         localStorage.setItem('user', null);
       }
@@ -27,6 +28,8 @@ export  class  AuthService {
     //console.log('user',user);
     return  user  !==  null;
   }
+
+
 
   async login(){
     await  this.afAuth.signInWithPopup(new auth.GoogleAuthProvider())

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
-import { Playlist, Song } from '../models'
+import { Playlist, Song, Track } from '../models'
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +15,20 @@ export class BackendService {
 export class PlaylistService {
 
   public response: Object;
+  private url = 'https://youster.oa.r.appspot.com/rest';
+  //url = 'http://localhost:8080/rest';
 
   constructor(private http: HttpClient) { }
 
   getPlaylists() {
-    var url = 'http://192.168.10.10:8080/rest/playlists';
+    var url = this.url + '/playlists';
 
     console.log("getPlaylists().");
     return this.http.get(url);
   }
 
-  getTracks(): Observable<String[]> {
-    const url = `http://192.168.10.10:8080/rest/tracks`;
+  getTracks(): Observable<Track[]> {
+    const url = this.url + '/tracks';
     return this.http.get(url)
       .map(res=>res['results']);
   }
@@ -34,7 +36,7 @@ export class PlaylistService {
   createPlaylist(name?: String): Observable<Playlist> {
     //switching to ui<->single backend mode
     //var url = `http://gc.maz.si/createpl/${name}`;
-    var url = `http://192.168.10.10:8080/rest/playlists/${name}`;
+    var url = this.url + `/playlists/${name}`;
 
     if (name == undefined) {
       console.log("Getting playlists.");
@@ -49,14 +51,14 @@ export class PlaylistService {
   }
 
   getSearchResult(text: String): Observable<String[]> {
-    const url = `http://192.168.10.10:8080/rest/search/${text}`;
+    const url = this.url + `/search/${text}`;
     console.log('search text:',text, url);
     return this.http.get(url)
       .map(res=>res['results']);
   }
 
   downloadService(song: Song): Observable<String[]> {
-    const url = `http://192.168.10.10:8080/rest/drive`;
+    const url = this.url + `/drive`;
     console.log('download song:',song, url);
     let postData = new FormData();
     postData.append('youtube_id' , song.youtube_id as string);

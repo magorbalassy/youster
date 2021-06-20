@@ -125,6 +125,9 @@ export class SearchComponent  {
         if (data['drive_id'] != '') {
           this.messageService.add({key: 'pl', severity:'success', summary: 'Download successful'});
         }
+        else {
+          this.messageService.add({key: 'pl', severity:'error', summary: 'Download failed'});
+        }
       }
     );
  } 
