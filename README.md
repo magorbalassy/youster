@@ -69,11 +69,11 @@ Build the bundle.js, copy together into a folder with search_backend, use gcloud
 ```bash
 # init gcloud environment, for ex. select username and project
 gcloud init
-gcloud config set account balassy.magor@gmail.com
+gcloud config set account email@gmail.com
 gcloud auth login
 gcloud config set project youster
 gcloud compute --project "youster" ssh --zone "us-east1-b" "gc"
-gcloud compute scp ../youster.tar.gz  balassy_magor@gc:~/
+gcloud compute scp ../youster.tar.gz  user@gc:~/
 gcloud compute scp [LOCAL_FILE_PATH] [INSTANCE_NAME]:~/
 gcloud app browse
 
@@ -89,7 +89,7 @@ ImportError: ctypes is currently disabled on this App Engine app; to enable it, 
 # App deployment
 
 ```bash
-magor@ubuntu-vm:~/Documents/SynologyDrive/youster$ gcloud app deploy app.yaml 
+user@ubuntu-vm:~/Documents/SynologyDrive/youster$ gcloud app deploy app.yaml 
 You are creating an app for project [playlis].
 WARNING: Creating an App Engine application for a project is irreversible and the region
 cannot be changed. More information about regions is at
@@ -119,8 +119,8 @@ Please enter your numeric choice:  8
 Creating App Engine application in project [youster] and region [europe-west3]....done.                                                         
 Services to deploy:
 
-descriptor:      [/home/magor/Documents/SynologyDrive/youster/app.yaml]
-source:          [/home/magor/Documents/SynologyDrive/youster]
+descriptor:      [/home/user/Documents/SynologyDrive/youster/app.yaml]
+source:          [/home/user/Documents/SynologyDrive/youster]
 target project:  [youster]
 target service:  [default]
 target version:  [20190623t173749]
